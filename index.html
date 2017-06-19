@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8"/>
-        <title>SoundClouwd API</title>
+        <title>SoundCloud API</title>
         <link href="main.css" rel="stylesheet" type="text/css">
     </head>
     </head>
@@ -10,20 +10,84 @@
 
         <main>
             <header>
-                <h1>Aud.io</h1>
+                <h1>aud.io</h1>
+                <h2>Sound Cloud API Demo</h2>
             </header>
-            <section class="player"></section>
             <section class="search initialState">
                 <form id="searchForm">
-                    <input type="text" name="search" id="searchBar" placeholder="Search for Artist">
-                    <button type="submit" id="searchButton">🔍</button>
-                </form>
-
-                
+                    <input type="text" name="search" id="searchBar" placeholder="Search for Music">
+                    <select id="searchTypeSelect">
+                        <option>everything</option>
+                        <option>users</option>
+                        <option>tracks</option>
+                        <option>playlists</option>
+                    </select>
+                    <button type="submit" id="searchButton">search</button>
+                </form>                
             </section>
             <section class="results"></section>
+
+
+            <section class="player">
+                <div class="artwork">
+                </div>
+                <div class="subplayer">
+                    <p class="nowPlayingLabel"><span><strong>Now Playing: </strong></span><span id="nowplayingstring"></span></p>
+                    <audio controls>
+                    </audio>
+                </div>
+            </section>
+            <footer>
+                ©2017 - julian herrera
+            </footer>
+            
         </main>
 
         <script src="main.js"></script>
+
+       <!--  <script>
+         SC.initialize({
+             client_id: '095fe1dcd09eb3d0e1d3d89c76f5618f'
+         });
+
+         // find all sounds of buskers licensed under 'creative commons share alike'
+         SC.get('/tracks', {
+             q: 'buskers', license: 'cc-by-sa'
+         }).then(function(tracks) {
+             console.log(tracks);
+         });
+        </script>-->
     </body>
+
+
+    <!-- HTML Templates -->
+
+    <!-- Search Result -->
+    <template id="searchResultTrackTemplate">
+        <div class="resultWrapper">
+            <div class="result track" data-track-src="" data-track-artist="" data-track-title="" data-streamable="">
+                <div class="art"></div>
+                <div class="textWrapper">
+                    <h3 class="title"></h3>
+                    <h4 class="artist"></h4>
+                </div>
+            </div>
+            <div class="clickCapture">
+            </div>
+        </div>
+    </template>
+
+    <template id="searchResultUserTemplate">
+        <div class="resultWrapper">
+            <div class="result user" data-user-id="">
+                <div class="art"></div>
+                <div class="textWrapper">
+                    <h3 class="user"></h3>
+                </div>
+            </div>
+            <div class="clickCapture">
+            </div>
+        </div>
+    </template>
+    
 </html>
