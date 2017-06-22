@@ -125,17 +125,29 @@ form {
     color: white;
 }
 
-.results {
+.content {
     height: calc(100% - 16rem);
+    background:rgba(0,0,0,.5);
+    overflow-y: scroll;
+    position: relative;
+}
+
+.results {
     display: flex;
     flex-wrap: wrap;
-    overflow-y: scroll;
+    position: absolute;
+    top: 0;
+    left: 0;
     justify-content: flex-start;
     font-size: 65%;
     text-align: center;
-    padding: 2%;
-    background:rgba(0,0,0,.5)
-              
+    padding: 2%;      
+}
+
+.artistPage {
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 .results > * {
@@ -201,4 +213,52 @@ form {
 
 .nowPlayingLabel {
     font-size: .75rem;
+}
+
+
+.hidden {
+    display: none;
+}
+
+.artistPage {
+    color: white;
+    padding: 2%;
+    width: 100%;
+}
+
+.artistPageImage{
+    width: 50%;
+    padding-top: 50%;
+    background-image: linear-gradient(135deg,#846170,#70929c);
+    border-radius: 50%;
+    margin-left: 25%;
+    margin-bottom: 1rem;
+}
+
+.artistPageMain{
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+
+.artistPageColL {
+    flex: 1 100%;
+    text-align: center;
+}
+
+.artistPageColR {
+    flex: 1 100%;
+}
+
+.artistTracks {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.artistTracks > * {
+    flex: 0 0 20%;
+    overflow: hidden;
+    text-align: center;
+    font-size: 65%;
 }

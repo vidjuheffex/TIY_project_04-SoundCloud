@@ -56,17 +56,22 @@ var soundCloud = (function(){
         return endpointString + searchValueURI + "&" +idString;
     }
 
+    function buildUserUrl(id){
+        let endpointString = 'https://api.soundcloud.com/users/';
+        return endpointString + id + "/tracks" + "?" + idString;
+    }
+
     function getStreamUrl(url){
         return url + "?" + idString;
     }
-        
+    
     
     return {
         buildUrl: buildUrl,
-        getStreamUrl: getStreamUrl
+        getStreamUrl: getStreamUrl,
+        buildUserUrl: buildUserUrl
     };
 })();
-
 
 /**
  * Module for interacting with the UI
@@ -98,6 +103,10 @@ var ui = (function(){
                     art.style.backgroundImage = 'linear-gradient(135deg,#846170,#70929c)';
                 }
                 user.textContent = e.username;
+
+                result.setAttribute("data-user-id", e.id);
+                result.setAttribute("data-username", e.username);
+                
                 resultsContainer.appendChild(resultContainer.content.cloneNode(true));
             }
             else if (e.kind == 'track'){
@@ -106,7 +115,7 @@ var ui = (function(){
                 art = resultContainer.content.querySelector(".art");                
                 var title = resultContainer.content.querySelector("h3");                    
                 var artist = resultContainer.content.querySelector("h4");
-                    
+                
                 if (e.artwork_url != null){
                     art.style.background = `url(${e.artwork_url}) no-repeat center center`;
                     art.style.backgroundSize = 'cover';
@@ -121,10 +130,8 @@ var ui = (function(){
                 result.setAttribute("data-track-title", e.title);
                 result.setAttribute("data-track-artist", e.user.username);
                 
-            resultsContainer.appendChild(resultContainer.content.cloneNode(true));
+                resultsContainer.appendChild(resultContainer.content.cloneNode(true));
             }
-
-
         });
     }
 
@@ -135,11 +142,53 @@ var ui = (function(){
         artwork.style.background = artElement.style.background;
         location.textContent = playingString;
     }
+
+    function buildArtistPage (id, name, artElement){
+        let artistPageImage = document.querySelector(".artistPageImage");
+        artistPageImage.style.background = artElement.style.background;
+        let artistPageName = document.querySelector(".artistPageName");
+        artistPageName.textContent = name;
+
+        //get tracks
+        utils.getJSON(soundCloud.buildUserUrl(id)).then((res)=>buildArtistTracks(res));
+        
+    }
+
+    function buildArtistTracks(res){
+        let artistsTracksDiv = document.querySelector(".artistTracks");
+        artistsTracksDiv.innerHTML = "";
+        res.forEach((e,i,a) => {
+            let resultContainer = document.querySelector("#searchResultTrackTemplate");
+            
+            let result =  resultContainer.content.querySelector(".result");
+            let art = resultContainer.content.querySelector(".art");                
+            var title = resultContainer.content.querySelector("h3");                    
+            var artist = resultContainer.content.querySelector("h4");
+            
+            if (e.artwork_url != null){
+                art.style.background = `url(${e.artwork_url}) no-repeat center center`;
+                art.style.backgroundSize = 'cover';
+            }
+            else {
+                art.style.backgroundImage = 'linear-gradient(135deg,#846170,#70929c)';
+            }
+            title.textContent = e.title;
+            artist.textContent = e.user.username;
+
+            result.setAttribute("data-track-src", e.stream_url);
+            result.setAttribute("data-track-title", e.title);
+            result.setAttribute("data-track-artist", e.user.username);
+            
+            artistsTracksDiv.appendChild(resultContainer.content.cloneNode(true));            
+        });
+        
+    }
     
     return {
         buildResults: buildResults,
         resetResults: resetResults,
-        updatePlaying: updatePlaying
+        updatePlaying: updatePlaying,
+        buildArtistPage: buildArtistPage
     };
 })();
 
@@ -169,7 +218,6 @@ var form = (function () {
     return {
         init: init
     };
-    
 })();
 
 var interaction = (function(){
@@ -184,7 +232,15 @@ var interaction = (function(){
             playback(artist, title, trackSource, art);
         }
         else if (type == 'user'){
-            
+            let results = document.querySelector(".results");            
+            results.classList.add("hidden");
+            let id = result.getAttribute("data-user-id");
+            let name = result.getAttribute("data-username");
+            ui.buildArtistPage(id, name, art);
+            let artistPage = document.querySelector(".artistPage");
+            artistPage.classList.remove("hidden");
+            let content = document.querySelector(".content");
+            content.scrollTop = 0;
         }
     }
 
@@ -192,8 +248,8 @@ var interaction = (function(){
         ui.updatePlaying(artist, title, artElement);
         let source =  document.querySelector("audio");
         source.setAttribute("src", soundCloud.getStreamUrl(trackSource));
+        source.play();
     }
-
     
     return {
         handleClick: handleClick
@@ -210,7 +266,20 @@ var core = (function(){
         results.addEventListener("click", function (ev) {
             interaction.handleClick(ev);
         });
-       
+
+        let resultsUsers = document.querySelector(".artistTracks");
+        resultsUsers.addEventListener("click", function(ev){
+            interaction.handleClick(ev); 
+        });
+
+        let backBtn = document.querySelector(".back");
+        backBtn.addEventListener("click", function(ev){
+            let artistsPage = document.querySelector(".artistPage");
+            artistsPage.classList.add("hidden");
+            let results = document.querySelector(".results");
+            results.classList.remove("hidden");
+        });
+        
         form.init();
     }
     

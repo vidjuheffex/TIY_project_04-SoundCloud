@@ -16,18 +16,32 @@
             <section class="search initialState">
                 <form id="searchForm">
                     <input type="text" name="search" id="searchBar" placeholder="Search for Music">
-                    <select id="searchTypeSelect">
+                    <!-- <select id="searchTypeSelect">
                         <option>everything</option>
                         <option>users</option>
                         <option>tracks</option>
-                        <option>playlists</option>
-                    </select>
+                    </select> -->
                     <button type="submit" id="searchButton">search</button>
                 </form>                
             </section>
-            <section class="results"></section>
-
-
+            <section class="content">
+                <section class="results"></section>
+                <section class="artistPage hidden">
+                    <div class="artistPageHeader">
+                        <p class="back">Back to Results</p>
+                    </div>
+                    <div class="artistPageMain">
+                        <div class="artistPageColL">
+                            <div class="artistPageImage"></div>
+                            <h2 class="artistPageName">Frank Zappa</h2>
+                        </div>
+                        <div class="artistPageColR">
+                            <h3>Tracks:</h3>
+                            <div class="artistTracks"></div>
+                        </div>
+                
+                </section>
+            </section>
             <section class="player">
                 <div class="artwork">
                 </div>
@@ -79,7 +93,7 @@
 
     <template id="searchResultUserTemplate">
         <div class="resultWrapper">
-            <div class="result user" data-user-id="">
+            <div class="result user" data-user-id="" data-username="">
                 <div class="art"></div>
                 <div class="textWrapper">
                     <h3 class="user"></h3>
